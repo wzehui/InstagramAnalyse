@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Pycharm
+.idea/
+
+# Large file
+*.csv
