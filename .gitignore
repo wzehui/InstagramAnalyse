@@ -133,3 +133,6 @@ dmypy.json
 
 # Large file
 *.csv
+
+# MacOS
+.DS_Store
