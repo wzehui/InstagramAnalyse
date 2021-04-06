@@ -2,7 +2,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-
 # import data from csv file
 df = pd.read_csv('/Users/ze/Documents/PycharmProjects/Data/Instagram/media'
                  '.csv', index_col=False)
