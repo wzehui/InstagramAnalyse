@@ -1,19 +1,11 @@
 import pandas as pd
-import re
 from langdetect import detect
-from LanguageDetect import detect_language
+import langid
+from Utils import detect_language
 
-def deEmojify(text):
-    regrex_pattern = re.compile(pattern = "["
-                                          u"\U0001F600-\U0001F64F"  # emoticons
-                                          u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-                                          u"\U0001F680-\U0001F6FF"  # transport & map symbols
-                                          u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-                                          "]+", flags = re.UNICODE)
-    return regrex_pattern.sub(r'',text)
 
 path = '/Users/ze/Documents/PycharmProjects/Data/Instagram/'  # MacBookPro
-df = pd.read_csv(path + 'comment.csv', nrows=999)
+df = pd.read_csv(path + 'comment.csv', nrows=10)
 
 df_text = df['text'].str.replace('[’·°–!"#$%&\'()*+,'
                                  '-./:;<=>?@，。?★、…【】（）《》？“”‘’！[\\]^_`{|}~]+',
@@ -21,20 +13,33 @@ df_text = df['text'].str.replace('[’·°–!"#$%&\'()*+,'
 #df_text = df_text.apply(lambda x: ' '.join([w for w in x.split() if len(w)>3]))
 df_text = df_text.apply(lambda x: x.lower())
 
-df_language = pd.DataFrame()
+df_language_1 = pd.DataFrame()
+df_language_2 = pd.DataFrame()
+df_language_openai = pd.DataFrame()
+
 for index, item_iter in df_text.iteritems():
     #df_text.iloc[index] = deEmojify(item_iter)
     try:
         lg = detect(item_iter)
     except:
         lg = 'unknown'
-    df_language.loc[index, 0] = lg
-df_text = pd.concat([df_text, df_language], axis='columns', sort=False)
-df_text.columns = (['text', 'language'])
+    df_language_1.loc[index, 0] = lg
 
-df_language_openai = pd.DataFrame()
-for index, item_iter in df_text.iterrows():
-    lg = detect_language(item_iter.text)
+    try:
+        lg = langid.classify(item_iter)
+    except:
+        lg = 'unknown'
+    df_language_2.loc[index, 0] = lg[0]
+
+    lg = detect_language(item_iter)
     df_language_openai.loc[index, 0] = lg['answers'][0]
-df_text = pd.concat([df_text, df_language_openai], axis='columns', sort=False)
-df_text.columns = (['text', 'language', 'language_ai'])
+
+df_text = pd.concat([df_text, df_language_1, df_language_2,
+                     df_language_openai], axis='columns', sort=False)
+df_text.columns = (['text', 'langdetect', 'langid', 'openai'])
+
+#for index, item_iter in df_text.iterrows():
+#    lg = detect_language(item_iter.text)
+#    df_language_openai.loc[index, 0] = lg['answers'][0]
+#df_text = pd.concat([df_text, df_language_openai], axis='columns', sort=False)
+#df_text.columns = (['text', 'language', 'language_ai'])
