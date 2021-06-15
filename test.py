@@ -18,7 +18,7 @@ neigh.fit(coords[['lat','lon']])
 
 #while True:
 #n += 1
-for n in np.linspace(9.1, 9.9, 9):
+for n in np.linspace(11, 12, 1):
     opt = math.pow(2, n)
     r = 2 * math.sqrt(opt/n_outlier)
     for index, item_iter in coords.iterrows():
@@ -30,7 +30,7 @@ for n in np.linspace(9.1, 9.9, 9):
         rng = neigh.radius_neighbors([[item_iter.lat, item_iter.lon]], radius=r)
         for index_iter in rng[1][0]:
             if coords.loc[index_iter, 'heavy'] == True:
-                coords.loc[index, 'outlier'] == False
+                coords.loc[index, 'outlier'] = False
                 break
     print(coords[coords['outlier'] == True].outlier.sum())
     print('n='.format(n))
