@@ -1,35 +1,46 @@
+import numpy as np
 import pandas as pd
-from scipy.stats import norm
-import math as m
-from mlxtend.frequent_patterns import fpgrowth, association_rules
+import os
+import math
+from AssociationRule import *
+from sklearn.neighbors import NearestNeighbors
 
-dict = {'owner':['wang', 'zhang', 'li', 'zhao', 'qian', 'liu', 'ma'],
-        'apple':[1, 0, 0, 1, 0, 0, 1],
-        'banana':[1, 1, 0, 1, 0, 0, 1],
-        'milk':[1, 0, 0, 0, 1, 0, 1],
-        'cigarette':[0, 1, 1, 0, 0, 1, 0]
-        }
+df_location = DataLoader('extended_locations.csv', ['id','lat','lon',
+                                                    'edge_media_count'])
+coords = df_location[['lat','lon']].copy()
+coords.loc[:, ['heavy', 'outlier']] = [False, True]
+n_outlier = 9975
 
-df = pd.DataFrame(dict)
-df.set_index('owner', inplace=True)
-frequent_items = fpgrowth(df, min_support=0.004, use_colnames=True)
-association_ruleset = association_rules(frequent_items, metric='lift',
-                                        min_threshold=1)
-for index, item_iter in association_ruleset.iterrows():
-    ante = list(item_iter.antecedents)
-    cons = list(item_iter.consequents)
-    amount_AB = df.shape[0] * item_iter.support
-    P_AB = item_iter['antecedent support'] * item_iter[
-            'consequent support']
-    p = 1 - norm.cdf(amount_AB - 0.5, df.shape[0] * P_AB,
-                     m.sqrt(df.shape[0] * P_AB * (1 - P_AB)))
-    print('p-value: {}'.format(p))
-    print('lift: {}, support: {}'.format(item_iter.lift,
-                                         item_iter.support))
-    for ante_iter in ante:
-            print(ante_iter)
-    print('---->')
-    for cons_iter in cons:
-            print(cons_iter)
+n = 0
+
+neigh = NearestNeighbors(algorithm='ball_tree', metric='haversine')
+neigh.fit(coords[['lat','lon']])
+
+#while True:
+#n += 1
+for n in np.linspace(9.1, 9.9, 9):
+    opt = math.pow(2, n)
+    r = 2 * math.sqrt(opt/n_outlier)
+    for index, item_iter in coords.iterrows():
+        rng = neigh.radius_neighbors([[item_iter.lat, item_iter.lon]], radius=r)
+        if len(rng[1][0]) >= 2 * n_outlier:
+            coords.loc[index, 'heavy'] = True
+    print(coords[coords['heavy']==True].heavy.sum())
+    for index, item_iter in coords.iterrows():
+        rng = neigh.radius_neighbors([[item_iter.lat, item_iter.lon]], radius=r)
+        for index_iter in rng[1][0]:
+            if coords.loc[index_iter, 'heavy'] == True:
+                coords.loc[index, 'outlier'] == False
+                break
+    print(coords[coords['outlier'] == True].outlier.sum())
+    print('n='.format(n))
     print('\n')
+    #coords[coords['outlier']==True]
 
+    #print(coords[coords['outlier']==True].outlier.sum())
+#
+#    if len(rng[1][0]) >= 2 * n_outlier:
+#        coords.loc[index, 'status'] = 'heavy'
+#    else:
+#        coords.loc[index, 'status'] = 'light'
+#

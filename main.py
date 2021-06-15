@@ -10,7 +10,7 @@ Copyright: 2021 Wang,Zehui (wzehui@hotmail.com)
 import pandas as pd
 from scipy.stats import norm
 import math as m
-from AssociationRule import AssociationRule
+from AssociationRule_city import AssociationRule
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':

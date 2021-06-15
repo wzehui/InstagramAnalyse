@@ -1,5 +1,5 @@
 import pandas as pd
-from AssociationRule import AssociationRule
+from AssociationRule_city import AssociationRule
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 
 if __name__ == '__main__':
