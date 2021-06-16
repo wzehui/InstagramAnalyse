@@ -34,7 +34,7 @@ for n in np.linspace(3, 12, 10):
                 coords_copy.loc[index, 'outlier'] = False
                 break
     print(coords_copy[coords_copy['outlier'] == True].outlier.sum())
-    print('n='.format(n))
+    print('n={}'.format(n))
     print('\n')
     #coords[coords['outlier']==True]
 
