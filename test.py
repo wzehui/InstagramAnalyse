@@ -19,20 +19,21 @@ neigh.fit(coords[['lat','lon']])
 #while True:
 #n += 1
 for n in np.linspace(11, 12, 1):
+    coords_copy = coords.copy()
     opt = math.pow(2, n)
     r = 2 * math.sqrt(opt/n_outlier)
-    for index, item_iter in coords.iterrows():
+    for index, item_iter in coords_copy.iterrows():
         rng = neigh.radius_neighbors([[item_iter.lat, item_iter.lon]], radius=r)
         if len(rng[1][0]) >= 2 * n_outlier:
-            coords.loc[index, 'heavy'] = True
-    print(coords[coords['heavy']==True].heavy.sum())
-    for index, item_iter in coords.iterrows():
+            coords_copy.loc[index, 'heavy'] = True
+    print(coords_copy[coords_copy['heavy']==True].heavy.sum())
+    for index, item_iter in coords_copy.iterrows():
         rng = neigh.radius_neighbors([[item_iter.lat, item_iter.lon]], radius=r)
         for index_iter in rng[1][0]:
-            if coords.loc[index_iter, 'heavy'] == True:
-                coords.loc[index, 'outlier'] = False
+            if coords_copy.loc[index_iter, 'heavy'] == True:
+                coords_copy.loc[index, 'outlier'] = False
                 break
-    print(coords[coords['outlier'] == True].outlier.sum())
+    print(coords_copy[coords_copy['outlier'] == True].outlier.sum())
     print('n='.format(n))
     print('\n')
     #coords[coords['outlier']==True]
