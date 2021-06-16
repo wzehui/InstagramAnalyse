@@ -18,7 +18,7 @@ neigh.fit(coords[['lat','lon']])
 
 #while True:
 #n += 1
-for n in np.linspace(8.449,8.441,9):
+for n in np.linspace(11, 12, 1):
     opt = math.pow(2, n)
     r = 2 * math.sqrt(opt/n_outlier)
     for index, item_iter in coords.iterrows():
