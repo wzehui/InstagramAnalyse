@@ -6,8 +6,8 @@ from sklearn.cluster import DBSCAN, KMeans, AgglomerativeClustering
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 
 def DataLoader(file_name, usecols, lineterminator=None):
-    path = '/Users/ze/Documents/PycharmProjects/Data/Instagram/'    # MacBookPro
-    #path = '/root/work/Data/'   # AI Server
+    #path = '/Users/ze/Documents/PycharmProjects/Data/Instagram/'    # MacBookPro
+    path = '/root/work/Data/'   # AI Server
     df = pd.read_csv(os.path.join(path, file_name), usecols=usecols,
                      lineterminator=lineterminator)
     if file_name == 'extended_locations.csv':
