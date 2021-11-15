@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-py-googletrans/
 
 # C extensions
 *.so
@@ -137,3 +136,6 @@ dmypy.json
 
 # MacOS
 .DS_Store
+
+# user Packet
+py-googletrans/
